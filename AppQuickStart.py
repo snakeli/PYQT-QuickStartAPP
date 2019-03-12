@@ -5,9 +5,10 @@ For quick starting files.
 Created by Junjun.Li
 """
 
+import configparser
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-import configparser
+import os
 import sys
 
 from PyQt5.QtCore import Qt
@@ -15,6 +16,7 @@ from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import *
 
 import win32api
+
 
 class myconf(configparser.ConfigParser):
     def __init__(self,defaults=None):
@@ -68,8 +70,9 @@ class StartWindow(QWidget):
 
         self.mainLayout = QGridLayout()
         self.mainLayout.setAlignment(Qt.AlignTop)
-        self.mainLayout.addWidget(self.line_edit, 1, 0)
-        self.mainLayout.addWidget(self.edit_button, 1, 1)
+        self.mainLayout.addWidget(self.line_edit, 0, 0, 1, 2)
+        self.mainLayout.addWidget(self.edit_button, 1, 0)
+        self.mainLayout.addWidget(self.cfg_button, 1, 1, 1, 2)
 
         for app_name in self.app_dict.keys():
             print(app_name)
@@ -80,14 +83,25 @@ class StartWindow(QWidget):
         self.mainLayout.setColumnStretch(0, 1)
         self.setLayout(self.mainLayout)
 
-        self.setStyleSheet("QLabel{color:rgb(100,100,100,250);font-size:13px;font-weight:bold;font-family:Roman times;}")
         self.setWindowIcon(QIcon("Icon.ico"))
         self.resize(500, 200)
 
     def create_app(self):
         self.line_edit = QLineEdit()
         self.edit_button = QPushButton("Add")
+        self.cfg_button = QPushButton("Open CFG")
+
+        self.line_edit.setPlaceholderText("Enter file name here")
         self.edit_button.clicked.connect(self.addAPP)
+        self.cfg_button.clicked.connect(self.open_cfg)
+
+    def open_cfg(self):
+        cfg_path = os.path.dirname(os.path.realpath(sys.argv[0])) + os.sep + "AppQuickStart.cfg"
+        try:
+            win32api.ShellExecute(0, 'open', "notepad.exe", cfg_path, '', 1)
+        except Exception as error:
+            print(error)
+            QMessageBox.information(self, "ERROR", "Can't open the CFG, Check whether it is exists! ", QMessageBox.Ok)
 
     def CreateGroup(self, group_name, _path="Click Change Path button to add app"):
         self.top_group = QGroupBox(group_name)
@@ -103,11 +117,11 @@ class StartWindow(QWidget):
         layout.addWidget(self.groups[group_name]["StartButton"], 0, 0)
         layout.addWidget(self.groups[group_name]["DeleteButton"], 0, 1)
         layout.addWidget(self.groups[group_name]["ChangePathButton"], 0, 2)
-        layout.addWidget(self.groups[group_name]["PathLineEdit"], 1, 0, 1, 5)
+        layout.addWidget(self.groups[group_name]["PathLineEdit"], 1, 0, 1, 6)
 
-        self.groups[group_name]["StartButton"].setFixedSize(100, 25)
-        self.groups[group_name]["DeleteButton"].setFixedSize(100, 25)
-        self.groups[group_name]["ChangePathButton"].setFixedSize(100, 25)
+        # self.groups[group_name]["StartButton"].resize(25, 25)
+        # self.groups[group_name]["DeleteButton"].resize(25, 25)
+        # self.groups[group_name]["ChangePathButton"].resize(25, 25)
         self.groups[group_name]["PathLineEdit"].setText(_path)
 
         self.groups[group_name]["ChangePathButton"].clicked.connect(lambda: self.changePath(group_name))
@@ -166,8 +180,10 @@ if __name__ == "__main__":
     APP.setStyle("Fusion")
 
     APP.setStyleSheet('''
-                        QPushButton{font: bold 12px; min-width: 10em;}
-                        QGroupBox{font: bold 16px;}
+                        QPushButton{font: 12px; min-width: 2em; max-width: 10em;}
+                        QGroupBox{font: bold 14px; background-color:rgb(255,250,250)}
+                        QLabel{color:rgb(100,100,100,250);font-size:13px;font-family:Roman times;}
+                        QLineEdit{font:Roman times; font-size:13px;}
                     ''')
 
     WIN = StartWindow()
