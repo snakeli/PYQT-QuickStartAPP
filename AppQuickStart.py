@@ -11,15 +11,23 @@ import configparser
 import sys
 
 from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import *
 
 import win32api
+
+class myconf(configparser.ConfigParser):
+    def __init__(self,defaults=None):
+        configparser.ConfigParser.__init__(self,defaults=None)
+    def optionxform(self, optionstr):
+        return optionstr
+
 
 
 class DealCFG():
     def __init__(self):
         self.app_dict = {}
-        self.config = configparser.ConfigParser()
+        self.config = myconf()
 
     def read_cfg(self):
         self.config.read("AppQuickStart.cfg")
@@ -66,14 +74,14 @@ class StartWindow(QWidget):
         for app_name in self.app_dict.keys():
             print(app_name)
             self.CreateGroup(app_name, self.app_dict[app_name])
-            self.mainLayout.addWidget(self.top_group, self.group_num, 0)
+            self.mainLayout.addWidget(self.top_group, self.group_num, 0, 1, 2)
 
         self.mainLayout.setRowStretch(1, 1)
         self.mainLayout.setColumnStretch(0, 1)
         self.setLayout(self.mainLayout)
 
         self.setStyleSheet("QLabel{color:rgb(100,100,100,250);font-size:13px;font-weight:bold;font-family:Roman times;}")
-
+        self.setWindowIcon(QIcon("Icon.ico"))
         self.resize(500, 200)
 
     def create_app(self):
@@ -132,6 +140,7 @@ class StartWindow(QWidget):
         self.groups[group_name]["top_group"].setParent(None)
         self.mainLayout.removeWidget(self.groups[group_name]["top_group"])
         self.deal_cfg.delete_cfg(group_name)
+        self.groups.pop(group_name)
 
     def addAPP(self):
         new_app_text = self.line_edit.text()
