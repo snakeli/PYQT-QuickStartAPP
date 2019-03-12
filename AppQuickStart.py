@@ -25,7 +25,6 @@ class myconf(configparser.ConfigParser):
         return optionstr
 
 
-
 class DealCFG():
     def __init__(self):
         self.app_dict = {}
@@ -155,6 +154,7 @@ class StartWindow(QWidget):
         self.mainLayout.removeWidget(self.groups[group_name]["top_group"])
         self.deal_cfg.delete_cfg(group_name)
         self.groups.pop(group_name)
+        self.app_dict.pop(group_name)
 
     def addAPP(self):
         new_app_text = self.line_edit.text()
@@ -180,7 +180,7 @@ if __name__ == "__main__":
     APP.setStyle("Fusion")
 
     APP.setStyleSheet('''
-                        QPushButton{font: 12px; min-width: 2em; max-width: 10em;}
+                        QPushButton{font: 12px; min-width: 5em; max-width: 10em;}
                         QGroupBox{font: bold 14px; background-color:rgb(255,250,250)}
                         QLabel{color:rgb(100,100,100,250);font-size:13px;font-family:Roman times;}
                         QLineEdit{font:Roman times; font-size:13px;}
