@@ -38,7 +38,10 @@ class DealCFG():
         with open("AppQuickStart.cfg", "w")as config_file:
             self.config.write(config_file)
 
-
+    def delete_cfg(self, app_name):
+        self.config.remove_option("APP", app_name)
+        with open("AppQuickStart.cfg", "w")as config_file:
+            self.config.write(config_file)
 
 
 class StartWindow(QWidget):
@@ -128,6 +131,7 @@ class StartWindow(QWidget):
     def deleteAPP(self, group_name):
         self.groups[group_name]["top_group"].setParent(None)
         self.mainLayout.removeWidget(self.groups[group_name]["top_group"])
+        self.deal_cfg.delete_cfg(group_name)
 
     def addAPP(self):
         new_app_text = self.line_edit.text()
@@ -153,11 +157,9 @@ if __name__ == "__main__":
     APP.setStyle("Fusion")
 
     APP.setStyleSheet('''
-        QPushButton{
-            font: bold 12px;
-            min-width: 10em;
-        }
-        ''')
+                        QPushButton{font: bold 12px; min-width: 10em;}
+                        QGroupBox{font: bold 16px;}
+                    ''')
 
     WIN = StartWindow()
     WIN.show()
