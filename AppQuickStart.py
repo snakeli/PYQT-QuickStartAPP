@@ -135,7 +135,10 @@ class StartWindow(QWidget):
 
     def changePath(self, group_name):
         open_dialog = QFileDialog()
-        _path = open_dialog.getOpenFileName()
+        _path = open_dialog.getOpenFileName(self, "", "C:\\")
+        if _path[0] == "":
+            print("Cancel choose")
+            return
         self.groups[group_name]["PathLineEdit"].setText(_path[0])
         self.app_dict[group_name] = _path[0]
         self.deal_cfg.write_cfg(group_name, _path[0])
